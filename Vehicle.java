@@ -1,20 +1,25 @@
+import java.util.concurrent.ThreadLocalRandom;
+
 public class Vehicle{
 
     private String mfr;
     private String color;
     private int numWheels;
     private Power powerType;
+    private int VIN;
 
      enum Power{
         ELECTRIC_MOTOR, GAS_ENGINE;
     }
 
     public Vehicle(){
+        this.VIN = ThreadLocalRandom.current().nextInt(100, 499 + 1);
         this.mfr="unknown";
         this.color="unknown";
         this.numWheels=4;
     }
     public Vehicle(String mfr, String color, int num, Power powType){
+        this.VIN = ThreadLocalRandom.current().nextInt(100, 499 + 1);
         this.mfr=mfr;
         this.color=color;
         this.numWheels=num;
@@ -58,12 +63,12 @@ public class Vehicle{
         }
     }
     public String display(){
-        return (this.getMfr()+" "+this.getColor());
+        return ("VIN#: "+this.VIN +" "+ this.getMfr()+" "+this.getColor());
     }
 
     public static void main(String[]args){
         Vehicle bmw = new Vehicle("BMW", "Silver", 4, Vehicle.Power.GAS_ENGINE);
-        bmw.display();
+        System.out.println(bmw.display());
     }
     
 }
