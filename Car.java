@@ -13,7 +13,17 @@ public class Car extends Vehicle implements Comparable<Car>{
     private int maxRange;
     private double safetyRating;
     private boolean AWD;
-    private double price;
+	private double price;
+	private int VIN;
+
+	public int getVIN() {
+		return this.VIN;
+	}
+
+	public void setVIN(int VIN) {
+		this.VIN = VIN;
+	}
+
 
 
 	//Getters and Setters

@@ -1,8 +1,9 @@
 import java.util.*;
-import java.util.Collections;
 
 public class CarDealership{
     private ArrayList<Car> cars;
+    private SalesTeam team;
+    private AccountingSystem accounts;
     private boolean filterElectric;
     private boolean filterAWD;
     private boolean filterPrice;
@@ -62,6 +63,8 @@ public class CarDealership{
         minPrice=0;
         maxPrice=0;
         lastCarBought=null;
+        team = new SalesTeam();
+        accounts = new AccountingSystem();
     }
 
     //Instance Methods
@@ -73,15 +76,30 @@ public class CarDealership{
     }
     //buyCar removes a car from the inventory, stores the object in the holder place of lastCarBought, and displays the purchase
     //There is also a try/catch exception handling function that prevents the user from entering an index that exceeds the bounds of the ArrayList
-    public Car buyCar(int index){
+    public String buyCar(int vin){
         try{
-            lastCarBought=cars.get(index);
-            cars.remove(index);
-            return lastCarBought;
-            
-        }catch (IndexOutOfBoundsException e){
-            return null;  
+            Random random = new Random();
+            Iterator<Car> iter = cars.listIterator();
+            while(iter.hasNext()){
+                int index =0;
+                if(iter.next().getMfr().equals("Kia")){
+                    /*
+                    Car temp = cars.get(index);
+                    cars.remove(cars.get(index));                
+                    String seller = this.team.getPerson();
+                    Calendar date = new GregorianCalendar();
+                    date.set(random.nextInt(19)+2000, random.nextInt(12), random.nextInt(28));
+                    System.out.println(temp.display());
+                    return accounts.add(date, temp, seller, Transaction.Type.BUY, temp.getPrice());
+                    */
+                    return(iter.next().getMfr());
+                }
+                index++;
+            }
+        }catch (Exception e){
+            return ("No vehicle matching that VIN was found. Try a new number.");  
         }
+        return ("No vehicle matching that VIN was found. Try a new number.");
     }
     //returnCar uses the object stored in lastCarBought and puts it back into the inventory, and shows a success message
     //There is also a try/catch exception handling function that prevents the user from trying to return a car if none was ever bought
@@ -192,7 +210,7 @@ public class CarDealership{
         this.minPrice = min;
         this.maxPrice = max;
     }
-    /*public static void main (String args[]){
+    public static void main (String args[]){
         CarDealership dealer = new CarDealership();
         ArrayList<Car> nucars = new ArrayList<Car>();
         Car x1 = new Car("BMW", "Silver", 4, Vehicle.Power.GAS_ENGINE, Car.Model.SUV, 600, 90.0, true, 35000);
@@ -207,5 +225,8 @@ public class CarDealership{
         //dealer.displayInventory();
         Collections.sort(nucars, new rangeSort());
         dealer.displayInventory();
-    }*/
+        System.out.println(dealer.buyCar(honda.getVIN()));
+        dealer.displayInventory();
+        dealer.accounts.displayAllTransactions();
+    }
 }

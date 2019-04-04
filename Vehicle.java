@@ -8,6 +8,15 @@ public class Vehicle{
     private Power powerType;
     private int VIN;
 
+	public int getVIN() {
+		return this.VIN;
+	}
+
+	public void setVIN(int VIN) {
+		this.VIN = VIN;
+	}
+
+
      enum Power{
         ELECTRIC_MOTOR, GAS_ENGINE;
     }
