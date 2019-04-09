@@ -1,4 +1,5 @@
 import java.util.GregorianCalendar;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import sun.util.calendar.Gregorian;
@@ -81,10 +82,10 @@ public class Transaction{
     }
     public String display(){
         if(this.transactionType == Transaction.Type.BUY){
-            return "#"+this.id+" "+ this.salesPerson+" sold: "+this.item.getMfr()+" "+this.item.getModel()+" at: " +this.date.getTime();
+            return "#"+this.id+" "+ this.salesPerson+" sold: "+this.item.getMfr()+" "+ new SimpleDateFormat("EEE, MMM d, yyyy").format(this.date.getTime());
         }
         else{
-            return"#"+this.id+" "+ this.salesPerson+" returned: "+this.item.getMfr()+" "+this.item.getModel()+" at: " +this.date.getTime();
+            return"#"+this.id+" "+ this.salesPerson+" returned: "+this.item.getMfr()+" "+new SimpleDateFormat("EEE, MMM d, yyyy").format(this.date.getTime());
         }
         
     }
