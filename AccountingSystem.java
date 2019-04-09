@@ -5,18 +5,32 @@ public class AccountingSystem{
 
     Map<Integer,Transaction> transactions;
 
+	public Map<Integer,Transaction> getTransactions() {
+		return this.transactions;
+	}
+
+	public void setTransactions(Map<Integer,Transaction> transactions) {
+		this.transactions = transactions;
+	}
+
+
     public AccountingSystem(){
         transactions = new HashMap<Integer,Transaction>();
     }
 
-    public String add(Calendar date, Car item, String salesPerson, Transaction.Type type, double price){
+    public Transaction add(Calendar date, Car item, String salesPerson, Transaction.Type type, double price){
         Random random = new Random();
         int transactionID = random.nextInt(99);
         Transaction nextTransaction = new Transaction(transactionID, item, salesPerson, type);
         nextTransaction.setDate(date.getTime());
         nextTransaction.setPrice(price);
         transactions.put(transactionID,nextTransaction);
-        return nextTransaction.display();
+        return nextTransaction;
+    }
+
+    public String add(Transaction trans){
+        transactions.put(trans.getId(), trans);
+        return trans.display();
     }
     public Transaction getTransaction(int id){
        return transactions.get(id);
@@ -35,7 +49,7 @@ public class AccountingSystem{
         Date date = new Date();
         Calendar cal = new GregorianCalendar();
         cal.setTime(date);
-        ourSystem.add(cal, BMW, newTeam.getPerson(), Transaction.Type.BUY, BMW.getPrice());
+        ourSystem.add(cal, BMW, newTeam.getRandomPerson().getName(), Transaction.Type.BUY, BMW.getPrice());
         ourSystem.displayAllTransactions();
     }
 }

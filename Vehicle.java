@@ -1,4 +1,5 @@
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.Random;
 
 public class Vehicle{
 
@@ -22,13 +23,13 @@ public class Vehicle{
     }
 
     public Vehicle(){
-        this.VIN = ThreadLocalRandom.current().nextInt(100, 499 + 1);
+        
         this.mfr="unknown";
         this.color="unknown";
         this.numWheels=4;
     }
     public Vehicle(String mfr, String color, int num, Power powType){
-        this.VIN = ThreadLocalRandom.current().nextInt(100, 499 + 1);
+        
         this.mfr=mfr;
         this.color=color;
         this.numWheels=num;

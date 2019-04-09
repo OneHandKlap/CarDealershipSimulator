@@ -1,8 +1,6 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.util.ArrayList;
-import java.util.InputMismatchException;
-import java.util.Scanner;
+
 import java.util.*;
 /**
  * The CarDealershipSimulator implements and demonstrates the code written in the package.
@@ -17,6 +15,7 @@ public class CarDealershipSimulator {
   public static void main(String[] args)
   {
 		CarDealership dealer = new CarDealership();
+		
 	  // Create a CarDealership object
 		ArrayList<Car> cars = new ArrayList<Car>(); // Create Car Array list 
 		Car x1 = new Car("BMW", "Silver", 4, Vehicle.Power.GAS_ENGINE, Car.Model.SUV, 600, 90.0, true, 35000); //Create some cars
@@ -43,12 +42,13 @@ public class CarDealershipSimulator {
 		System.out.printf("%-30.30s   %-30.30s%n", "SSR - to sort by safety rating", "SMR - to sort by max range");
 		System.out.printf("%-30.30s   %-30.30s%n", "FEL - to filter our inventory by Electric Vehicles", "FAW - to filter for AWD");
 		System.out.printf("%-30.30s   %-30.30s%n", "FPR - to filter by price", "FCL - to clear the filters");
+		System.out.printf("%-30.30s   %-30.30s%n", "SALES - to show transactions", "SALES TEAM - to show the team");
 
 		Scanner scan = new Scanner(System.in);//initialize scanner
 		while (scan.hasNextLine()){
 			Scanner commandLine = new Scanner(scan.nextLine());
-			String choice = commandLine.next();
-			if((!choice.equals("L"))&&(!choice.equals("BUY"))&&(!choice.equals("RET"))&&(!choice.equals("ADD"))&&(!choice.equals("SPR"))&&(!choice.equals("SSR"))&&(!choice.equals("FEL"))&&(!choice.equals("FAW"))&&(!choice.equals("SMR"))&&(!choice.equals("FCL"))&&(!choice.equals("Q"))&&(!choice.equals("FPR"))){
+			String choice = commandLine.nextLine();
+			if((!choice.equals("L"))&&(!choice.equals("BUY"))&&(!choice.equals("RET"))&&(!choice.equals("ADD"))&&(!choice.equals("SPR"))&&(!choice.equals("SSR"))&&(!choice.equals("FEL"))&&(!choice.equals("FAW"))&&(!choice.equals("SMR"))&&(!choice.equals("FCL"))&&(!choice.equals("Q"))&&(!choice.equals("SALES"))&&(!choice.equals("SALES TEAM"))&&(!choice.equals("SALES TOPSP"))&&(!choice.equals("SALES STATS"))){
 				System.out.println("Sorry I didn't understand that, try a different command.");
 			}
 			else if(choice.equals("L")){
@@ -59,28 +59,33 @@ public class CarDealershipSimulator {
 			}
 			else if(choice.equals("BUY")){ // If user wishes to "BUY" a car, set new scanner to read and store their choice, and fetch that vehicle
 				Scanner sc = new Scanner(System.in);
-				System.out.println("Enter the number of the vehicle you wish to purchase.");
+				System.out.println("Enter the VIN number of the vehicle you wish to purchase.");
 				try{
 				int vehicleChoice = sc.nextInt();
-				dealer.buyCar(vehicleChoice);
-				try{ 
-					System.out.println(dealer.getLastcarbought().getMfr()+ " " +dealer.getLastcarbought().getModel()+" was bought.");
-					}
-					catch(NullPointerException e){//Try catch exception handling in case the user puts in an integer that is not within the index
-						System.out.println(e+"\nSorry, that selection is invalid. Make sure to choose a car that is displayed in the inventory");
-					}
+				System.out.println(dealer.buyCar(vehicleChoice));
+				
 				}catch(InputMismatchException e){// Try catch exception handling in case the user puts in letters instead of a number
-					System.out.println(e+"\nSorry, I didn't understand that. Please use the index number of the vehicle you wish to purchase");
+					System.out.println(e+"\nSorry, I didn't understand that. Please use the VIN number of the vehicle you wish to purchase");
 				}
 			}
 			else if(choice.equals("RET")){ //re-adds the variable stored in lastCarBought back into the inventory ArrayList
 				try{
-				System.out.println(dealer.getLastcarbought().display()+ " returned");
-				dealer.returnCar(dealer.getLastcarbought());
-				dealer.setLastcarbought(null); //sets the lastCarBought variable to null
-				}catch(NullPointerException e){
-					System.out.println("Sorry, there is no car to return. Try a different command.");
+				System.out.println("Input the transaction number of the vehicle you purchased.");
+				Scanner scanner = new Scanner(System.in);
+				int transactionNum = scanner.nextInt();
+				for(Transaction value:dealer.getAccounts().getTransactions().values()){
+					if(value.getId()==transactionNum){
+						dealer.returnCar(transactionNum);
+						break;
+					}
+				}	
 				}
+				catch(InputMismatchException e){
+					System.out.println("Please input the transaction number of the vehicle you purchased.");
+				}
+				
+			
+				
 			}
 			else if(choice.equals("ADD")){ //Adds a pre-set ArrayList of cars into the inventory of the dealership
 				dealer.addCars(cars);
@@ -129,6 +134,73 @@ public class CarDealershipSimulator {
 				System.out.println("Inventory filters reset");
 			
 			}
+			else if(choice.equals("SALES")){
+				if(dealer.getAccounts().transactions.isEmpty()){
+					System.out.println("Sorry, no transactions yet.");
+				}
+				else{
+					dealer.getAccounts().displayAllTransactions();
+				}
+			}
+			else if(choice.equals("SALES TEAM")){
+				System.out.println(dealer.getTeam().getTeam());
+			}
+			else if(choice.equals("SALES TOPSP")){
+				int maxSales = 0;
+				String maxSeller ="";
+				for(SalesPerson temp:dealer.getTeam().getTeamList()){
+					int thisTotalSales=0;
+					for(Transaction temp1:temp.getSales()){
+						thisTotalSales+=temp1.getPrice();
+					}
+					if(thisTotalSales>maxSales){
+						maxSales=thisTotalSales;
+						maxSeller=temp.getName();
+					}
+				}
+				
+				System.out.println("The sales associate with the most sales is: "+maxSeller+", with "+maxSales+" in sales!");
+			}
+			else if(choice.equals("SALES STATS")){
+				Map<Integer,Transaction> trans = dealer.getAccounts().getTransactions();
+				Map<Integer,Integer> monthSales = new HashMap<Integer,Integer>();
+				int totalSales=0;
+				int averageSales=0;
+				int averageSalesPerMonth=0;
+				int numberOfSales=0;
+				int highestSalesMonth=0;
+				int maxSalesPerMonth=0;
+				int totalReturns=0;
+				for(Map.Entry<Integer,Transaction> entry: trans.entrySet()){
+					Transaction thisTrans = entry.getValue();
+					if(thisTrans.getTransactionType()==Transaction.Type.RET){
+						totalReturns+=1;
+						totalSales-=thisTrans.getPrice();
+						numberOfSales--;
+					}
+					else{
+						int salesMonth = thisTrans.getDate().getInstance().get(Calendar.MONTH);
+						monthSales.put(salesMonth, monthSales.get(salesMonth)+1);
+						totalSales+=thisTrans.getPrice();
+						numberOfSales++;
+					}
+				}
+				for(Map.Entry<Integer,Integer> entry: monthSales.entrySet()){
+					averageSalesPerMonth+=entry.getValue();
+					if(entry.getValue()>maxSalesPerMonth){
+						highestSalesMonth=entry.getKey();
+						maxSalesPerMonth=entry.getValue();
+					}
+				}
+				averageSalesPerMonth=averageSalesPerMonth/12;
+				averageSales = totalSales/numberOfSales;
+				Calendar date = new GregorianCalendar();
+				date.set(Calendar.MONTH, highestSalesMonth);
+				System.out.println("The total number of sales for 2019 is: "+ numberOfSales);
+				System.out.println("The average sales in terms of $ per month is: "+averageSales/averageSalesPerMonth);
+				System.out.println("The total number of cars sold is: "+ totalSales);
+				System.out.println("the highest sales month in terms of # of cars sold is: "+date.getDisplayName(Calendar.MONTH, Calendar.SHORT_FORMAT,Locale.CANADA ));
+			}
 		}
-  }
+  	}
 }

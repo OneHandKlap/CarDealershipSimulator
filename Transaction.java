@@ -61,7 +61,11 @@ public class Transaction{
 		this.transactionType = transactionType;
 	}
 
-    
+    public Transaction(){
+		Date day = new Date();
+        this.date = new GregorianCalendar();
+        date.setTime(day);
+	}
 
     public Transaction(int id, Car item, String seller, Type transact){
         Date day = new Date();
@@ -77,19 +81,13 @@ public class Transaction{
     }
     public String display(){
         if(this.transactionType == Transaction.Type.BUY){
-            return this.salesPerson+" sold: "+this.item.getMfr()+" "+this.item.getModel()+" at:" +this.date.getTime();
+            return "#"+this.id+" "+ this.salesPerson+" sold: "+this.item.getMfr()+" "+this.item.getModel()+" at: " +this.date.getTime();
         }
         else{
-            return this.salesPerson+" returned: "+this.item.getMfr()+" "+this.item.getModel()+" at: " +this.date.getTime();
+            return"#"+this.id+" "+ this.salesPerson+" returned: "+this.item.getMfr()+" "+this.item.getModel()+" at: " +this.date.getTime();
         }
         
     }
     public static void main(String[]args){
-        Car bmw = new Car("Bmw", "red", 4, Vehicle.Power.GAS_ENGINE, Car.Model.SEDAN, 400, 9.5, true, 4000);
-        SalesTeam thisTeam = new SalesTeam();
-        Transaction that = new Transaction(86, bmw, thisTeam.getPerson(), Transaction.Type.BUY);
-        System.out.println(that.display());
-        
-        
     }
 }

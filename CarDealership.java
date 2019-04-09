@@ -10,6 +10,30 @@ public class CarDealership{
     private double minPrice;
     private double maxPrice;
     private Car lastCarBought;
+    public static void main (String args[]){
+        CarDealership dealer = new CarDealership();
+        ArrayList<Car> nucars = new ArrayList<Car>();
+        Car x1 = new Car("BMW", "Silver", 4, Vehicle.Power.GAS_ENGINE, Car.Model.SUV, 600, 90.0, true, 35000);
+		Car passat = new Car("Volkswagen", "red", 4, Vehicle.Power.GAS_ENGINE, Car.Model.SEDAN, 700, 95.0, false, 32000);
+		Car kia = new Car("Kia", "blue", 4, Vehicle.Power.GAS_ENGINE, Car.Model.SEDAN, 800, 9.5, false, 16000);
+        Car honda = new Car("Honda", "red", 4, Vehicle.Power.GAS_ENGINE, Car.Model.SUV, 600, 8.5, true, 25000);	
+        nucars.add(x1);
+		nucars.add(passat);
+		nucars.add(kia);
+        nucars.add(honda);
+        dealer.addCars(nucars);
+        Collections.sort(nucars, new rangeSort());
+        //dealer.displayInventory();
+        //System.out.println(dealer.buyCar(passat.getVIN()));
+        dealer.displayInventory();
+        Transaction that = new Transaction(69, honda, "Me", Transaction.Type.BUY);
+        
+        dealer.accounts.add(that);
+        dealer.returnCar(69);
+        dealer.accounts.displayAllTransactions();
+        dealer.displayInventory();
+
+    }
 
 
     //Getter and Setter methods for instance variables. Most of these are unused because of the filter methods because their is no child class that needs to access them
@@ -53,6 +77,21 @@ public class CarDealership{
 	{
 		this.filterPrice = filterPrice;
     }
+    public SalesTeam getTeam() {
+		return this.team;
+	}
+
+	public void setTeam(SalesTeam team) {
+		this.team = team;
+	}
+
+	public AccountingSystem getAccounts() {
+		return this.accounts;
+	}
+
+	public void setAccounts(AccountingSystem accounts) {
+		this.accounts = accounts;
+	}
 
     //Generic constructor
     public CarDealership(){
@@ -77,38 +116,60 @@ public class CarDealership{
     //buyCar removes a car from the inventory, stores the object in the holder place of lastCarBought, and displays the purchase
     //There is also a try/catch exception handling function that prevents the user from entering an index that exceeds the bounds of the ArrayList
     public String buyCar(int vin){
+        Random random = new Random();
         try{
-            Random random = new Random();
+            
+            if(cars.isEmpty()){
+                return ("Sorry, there are no cars available for purchase.");
+            }
             Iterator<Car> iter = cars.listIterator();
             while(iter.hasNext()){
-                int index =0;
-                if(iter.next().getMfr().equals("Kia")){
-                    /*
-                    Car temp = cars.get(index);
-                    cars.remove(cars.get(index));                
-                    String seller = this.team.getPerson();
+                Car temp = iter.next();
+                if(temp.getVIN()==vin){
+                    
+                    cars.remove(temp);
+                    String salesPerson = team.getRandomPerson().getName();
                     Calendar date = new GregorianCalendar();
-                    date.set(random.nextInt(19)+2000, random.nextInt(12), random.nextInt(28));
-                    System.out.println(temp.display());
-                    return accounts.add(date, temp, seller, Transaction.Type.BUY, temp.getPrice());
-                    */
-                    return(iter.next().getMfr());
+                    date.set(2019, random.nextInt(12), random.nextInt(25));
+                    int transID =  accounts.add(date, temp, salesPerson, Transaction.Type.BUY, temp.getPrice()).getId();
+                    String seller = accounts.getTransaction(transID).getSalesPerson();
+                    team.getPerson(seller).getSales().add(accounts.getTransaction(transID));
+                    return accounts.getTransaction(transID).display();
+                    
+                    
                 }
-                index++;
             }
         }catch (Exception e){
             return ("No vehicle matching that VIN was found. Try a new number.");  
         }
-        return ("No vehicle matching that VIN was found. Try a new number.");
+        return ("Sorry, no vehicle matching that VIN was found. Try a new number.");  
     }
     //returnCar uses the object stored in lastCarBought and puts it back into the inventory, and shows a success message
     //There is also a try/catch exception handling function that prevents the user from trying to return a car if none was ever bought
-    public void returnCar(Car car){
+    public void returnCar(int transactionNum){
         try{
-            cars.add(car);
-        }catch(NullPointerException e){
-            System.err.println(e);
+            Transaction thisReturn = accounts.getTransaction(transactionNum);
+            Car returnedCar = thisReturn.getItem();
+            Calendar date = new GregorianCalendar();
+            Random random = new Random();
+            date.set(thisReturn.getDate().get(Calendar.YEAR),thisReturn.getDate().get(Calendar.MONTH)+random.nextInt(2),thisReturn.getDate().get(Calendar.DAY_OF_YEAR)+random.nextInt(3));
+            cars.add(returnedCar);
+            String sellerName = accounts.getTransaction(transactionNum).getSalesPerson();
+            SalesPerson salesPerson = team.getPerson(sellerName);
+            salesPerson.getSales().remove(thisReturn);
+            SalesPerson returner = team.getRandomPerson();
+            accounts.add(date, returnedCar, returner.getName(), Transaction.Type.RET, returnedCar.getPrice());
+            
+            
+            
+            
+            System.out.println("Car returned successfully");
+           
         }
+        catch(Exception e){
+            System.out.println(e+"Error, transaction number does not match any in our records");
+        }
+        
     }
 
     //displayInventory evaluates the logic state of the three boolean variables implicit in CarDealerships. These represent the filter conditions. 
@@ -210,23 +271,5 @@ public class CarDealership{
         this.minPrice = min;
         this.maxPrice = max;
     }
-    public static void main (String args[]){
-        CarDealership dealer = new CarDealership();
-        ArrayList<Car> nucars = new ArrayList<Car>();
-        Car x1 = new Car("BMW", "Silver", 4, Vehicle.Power.GAS_ENGINE, Car.Model.SUV, 600, 90.0, true, 35000);
-		Car passat = new Car("Volkswagen", "red", 4, Vehicle.Power.GAS_ENGINE, Car.Model.SEDAN, 700, 95.0, false, 32000);
-		Car kia = new Car("Kia", "blue", 4, Vehicle.Power.GAS_ENGINE, Car.Model.SEDAN, 800, 9.5, false, 16000);
-        Car honda = new Car("Honda", "red", 4, Vehicle.Power.GAS_ENGINE, Car.Model.SUV, 600, 8.5, true, 25000);	
-        nucars.add(x1);
-		nucars.add(passat);
-		nucars.add(kia);
-        nucars.add(honda);
-        dealer.addCars(nucars);
-        //dealer.displayInventory();
-        Collections.sort(nucars, new rangeSort());
-        dealer.displayInventory();
-        System.out.println(dealer.buyCar(honda.getVIN()));
-        dealer.displayInventory();
-        dealer.accounts.displayAllTransactions();
-    }
+    
 }

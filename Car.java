@@ -14,14 +14,11 @@ public class Car extends Vehicle implements Comparable<Car>{
     private double safetyRating;
     private boolean AWD;
 	private double price;
-	private int VIN;
+	
 
-	public int getVIN() {
-		return this.VIN;
-	}
-
-	public void setVIN(int VIN) {
-		this.VIN = VIN;
+	public static void main(String[]args){
+		Car x1 = new Car("BMW", "red", 4, Vehicle.Power.ELECTRIC_MOTOR, Car.Model.MINIVAN, 400, 9.5, true, 30000);
+		System.out.println(x1.getVIN());
 	}
 
 
@@ -77,7 +74,11 @@ public class Car extends Vehicle implements Comparable<Car>{
         this.maxRange=range;
         this.safetyRating=safe;
         this.AWD=AWD;
-        this.price=price;
+		this.price=price;
+		Random random = new Random();
+		this.setVIN(random.nextInt(499));
+		
+		
 	}
 	//Instance Methods
 	//This method calls the display function of the super class first, then displays all of the relevant information of this object
