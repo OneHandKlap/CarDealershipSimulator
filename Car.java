@@ -76,9 +76,8 @@ public class Car extends Vehicle implements Comparable<Car>{
         this.AWD=AWD;
 		this.price=price;
 		Random random = new Random();
-		this.setVIN(random.nextInt(499));
-		
-		
+		this.setVIN(random.nextInt(399)+100);
+				
 	}
 	//Instance Methods
 	//This method calls the display function of the super class first, then displays all of the relevant information of this object

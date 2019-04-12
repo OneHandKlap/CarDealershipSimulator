@@ -4,6 +4,7 @@ import java.util.*;
 public class AccountingSystem{
 
     Map<Integer,Transaction> transactions;
+    ArrayList<Integer> transIDs;
 
 	public Map<Integer,Transaction> getTransactions() {
 		return this.transactions;
@@ -16,11 +17,17 @@ public class AccountingSystem{
 
     public AccountingSystem(){
         transactions = new HashMap<Integer,Transaction>();
+        transIDs = new ArrayList<Integer>();
     }
 
     public Transaction add(Calendar date, Car item, String salesPerson, Transaction.Type type, double price){
+        
         Random random = new Random();
-        int transactionID = random.nextInt(99);
+        int transactionID = random.nextInt(98)+1;
+        while(transIDs.contains(transactionID)){
+            transactionID=random.nextInt(98)+1;
+        }
+        transIDs.add(transactionID);
         Transaction nextTransaction = new Transaction(transactionID, item, salesPerson, type);
         nextTransaction.setDate(date.getTime());
         nextTransaction.setPrice(price);

@@ -1,4 +1,7 @@
 import java.util.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 
 public class CarDealership{
     private ArrayList<Car> cars;
@@ -159,10 +162,6 @@ public class CarDealership{
             salesPerson.getSales().remove(thisReturn);
             SalesPerson returner = team.getRandomPerson();
             accounts.add(date, returnedCar, returner.getName(), Transaction.Type.RET, returnedCar.getPrice());
-            
-            
-            
-            
             System.out.println("Car returned successfully");
            
         }
@@ -178,41 +177,41 @@ public class CarDealership{
         for(int i = 0;i<cars.size();i++){//iterate through the entire inventory
             if(filterElectric==true&&filterAWD==true&&filterPrice==true){//this if statement represents 1/8 boolean scenarios (2^3 = 8)
                 if((cars.get(i).getAwd()==true)&&(cars.get(i).getPower()==Vehicle.Power.ELECTRIC_MOTOR) && (cars.get(i).getPrice()>=minPrice) && (cars.get(i).getPrice()<=maxPrice)){//this if statement verifies if each element meets the required conditions for being displayed
-                    System.out.println(i+ " " +cars.get(i).display());//if the object does meet the criteria, display!
+                    System.out.println(cars.get(i).display());//if the object does meet the criteria, display!
                 }
             }
             else if(filterElectric==true&&filterAWD==true&&filterPrice==false){//this if statement represents boolean scenario 2/8
                 if(cars.get(i).getAwd()==true&& (cars.get(i).getPower()==Vehicle.Power.ELECTRIC_MOTOR)){
-                    System.out.println(i+ " " +cars.get(i).display());
+                    System.out.println(cars.get(i).display());
                 }
             }
             else if(filterElectric==true&&filterAWD==false&&filterPrice==false){//this if statement represents boolean scenario 3/8
                 if(cars.get(i).getPower()==Vehicle.Power.ELECTRIC_MOTOR){
-                    System.out.println(i+ " " +cars.get(i).display());
+                    System.out.println(cars.get(i).display());
                 }
             }
             else if(filterElectric==true&&filterAWD==false&&filterPrice==true){//this if statement represents boolean scenario 4/8
                 if((cars.get(i).getPower()==Vehicle.Power.ELECTRIC_MOTOR) && (cars.get(i).getPrice()>=minPrice) && (cars.get(i).getPrice()<=maxPrice)){
-                    System.out.println(i+ " " +cars.get(i).display());
+                    System.out.println(cars.get(i).display());
                 }
             }
             else if(filterElectric==false&&filterAWD==true&&filterPrice==true){//this if statement represents boolean scenario 5/8
                 if(cars.get(i).getAwd()==true&&cars.get(i).getPrice()>=minPrice&&cars.get(i).getPrice()<=maxPrice){
-                    System.out.println(i+ " " +cars.get(i).display());
+                    System.out.println(cars.get(i).display());
                 }
             }
             else if(filterElectric==false&&filterAWD==true&&filterPrice==false){//this if statement represents boolean scenario 6/8
                 if(cars.get(i).getAwd()==true){
-                    System.out.println(i+ " " +cars.get(i).display());
+                    System.out.println(cars.get(i).display());
                 }
             }
             else if(filterElectric==false&&filterAWD==false&&filterPrice==true){//this if statement represents boolean scenario 7/8
                 if(cars.get(i).getPrice()>=minPrice&&cars.get(i).getPrice()<=maxPrice){
-                    System.out.println(i+ " " +cars.get(i).display());
+                    System.out.println(cars.get(i).display());
                 }
             }
             else if(filterElectric==false&&filterAWD==false&&filterPrice==false){//this if statement represents boolean scenario 8/8
-                    System.out.println(i+ " " +cars.get(i).display());
+                    System.out.println(cars.get(i).display());
             }
         }
     }
@@ -271,5 +270,54 @@ public class CarDealership{
         this.minPrice = min;
         this.maxPrice = max;
     }
+    public static ArrayList<Car> importCarData(String filePath) {
+
+		ArrayList<Car> imported = new ArrayList<Car>();
+		try {
+			File importFile = new File(filePath);
+			BufferedReader reader = new BufferedReader(new FileReader(importFile));
+			String line;
+			while ((line = reader.readLine()) != null) {
+				StringTokenizer params = new StringTokenizer(line);
+				int nParam = 0;
+				Car.Model model = null;
+				Vehicle.Power power = null;
+				String mfr = null, color = null, batteryType = "LITHIUM ION";
+				boolean awd = false;
+				double safetyRating = 0, price = 0;
+				int range = 0, rechargeTime = 0;
+				while (params.hasMoreTokens()) {
+					if (nParam == 0)
+						mfr = params.nextToken();
+					if (nParam == 1)
+						color = params.nextToken();
+					if (nParam == 2)
+						model = Car.Model.valueOf(params.nextToken());
+					if (nParam == 3)
+						power = Vehicle.Power.valueOf(params.nextToken());
+					if (nParam == 4)
+						safetyRating = Double.parseDouble(params.nextToken());
+					if (nParam == 5)
+						range = Integer.parseInt(params.nextToken());
+					if (nParam == 6)
+						awd = (params.nextToken().equals("AWD")) ? true : false;
+					if (nParam == 7)
+						price = Double.parseDouble(params.nextToken());
+					if (nParam == 8)
+						rechargeTime = Integer.parseInt(params.nextToken());
+					nParam++;
+				}
+				if (rechargeTime != 0)
+					imported.add(new ElectricCar(mfr, color, 4, power, model, range, safetyRating, awd, price, rechargeTime, "Lithium-Ion"));
+				else
+					imported.add(new Car(mfr, color, 4, power, model, range, safetyRating, awd, price));
+			}
+		} catch (Exception e) {
+
+			System.err.println(e);
+		}
+		return imported;
+	}
+	
     
 }

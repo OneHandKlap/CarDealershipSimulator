@@ -1,7 +1,8 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
-
+import java.text.SimpleDateFormat;
 import java.util.*;
+
 /**
  * The CarDealershipSimulator implements and demonstrates the code written in the package.
  * Simulates the working of a car dealership's inventory management software with several different commands.
@@ -11,48 +12,50 @@ import java.util.*;
  */
 
 public class CarDealershipSimulator {
-	
+
   public static void main(String[] args)
   {
+	  	// Create a CarDealership object
 		CarDealership dealer = new CarDealership();
 		
-	  // Create a CarDealership object
-		ArrayList<Car> cars = new ArrayList<Car>(); // Create Car Array list 
-		Car x1 = new Car("BMW", "Silver", 4, Vehicle.Power.GAS_ENGINE, Car.Model.SUV, 600, 90.0, true, 35000); //Create some cars
-		Car passat = new Car("Volkswagen", "red", 4, Vehicle.Power.GAS_ENGINE, Car.Model.SEDAN, 700, 95.0, false, 32000);
-		Car kia = new Car("Kia", "blue", 4, Vehicle.Power.GAS_ENGINE, Car.Model.SEDAN, 800, 9.5, false, 16000);
-		Car honda = new Car("Honda", "red", 4, Vehicle.Power.GAS_ENGINE, Car.Model.SUV, 600, 8.5, true, 25000);	
-		Car volt = new ElectricCar("Chevrolet", "green", 4, Vehicle.Power.ELECTRIC_MOTOR,Car.Model.SEDAN, 400, 9, false, 16000, 50, "Lithium-Ion");
-		Car tesla = new ElectricCar("Tesla", "silver", 4, Vehicle.Power.ELECTRIC_MOTOR,Car.Model.SPORTS,500,8,false,40000,70, "Lithium-Ion");
-		Car elCamino = new Car("Chevrolet", "red", 4, Vehicle.Power.GAS_ENGINE, Car.Model.SUV, 500, 5, true, 15000);
-		Car odyssey = new Car("Honda","black",4, Vehicle.Power.GAS_ENGINE, Car.Model.MINIVAN,650,9.5,false,33000);
-		cars.add(x1);
-		cars.add(passat);
-		cars.add(kia);
-		cars.add(honda);
-		cars.add(volt);
-		cars.add(tesla);
-		cars.add(elCamino);
-		cars.add(odyssey);
+	  
+		// Create some car objects by reading from a file
+		ArrayList<Car> readCars = dealer.importCarData("cars.txt");
 		//Print some user interface instructions and welcome message
 		System.out.print("\nWelcome to Best-Ride Car Dealership!\n\nTo use our software input one of the following commands:");
-		System.out.printf("\n\n%-30.30s   %-30.30s%n", "L - to list our inventory", "Q - to quit this program");
-		System.out.printf("%-30.30s   %-30.30s%n", "BUY - to buy a vehicle", "RET - to return a car");
-		System.out.printf("%-30.30s   %-30.30s%n", "ADD - to add more vehicles", "SPR - to sort our inventory by price");
-		System.out.printf("%-30.30s   %-30.30s%n", "SSR - to sort by safety rating", "SMR - to sort by max range");
-		System.out.printf("%-30.30s   %-30.30s%n", "FEL - to filter our inventory by Electric Vehicles", "FAW - to filter for AWD");
-		System.out.printf("%-30.30s   %-30.30s%n", "FPR - to filter by price", "FCL - to clear the filters");
-		System.out.printf("%-30.30s   %-30.30s%n", "SALES - to show transactions", "SALES TEAM - to show the team");
+		System.out.printf("\n\n%-40.40s   %-40.40s%n", "L - to list our inventory", "Q - to quit this program");
+		System.out.printf("%-40.40s   %-40.40s%n", "BUY - to buy a vehicle", "RET - to return a car");
+		System.out.printf("%-40.40s   %-40.40s%n", "ADD - to add more vehicles", "SPR - to sort our inventory by price");
+		System.out.printf("%-40.40s   %-40.40s%n", "SSR - to sort by safety rating", "SMR - to sort by max range");
+		System.out.printf("%-40.40s   %-40.40s%n", "FEL - to filter our inventory by Elect", "FAW - to filter for AWD");
+		System.out.printf("%-40.40s   %-40.40s%n", "FPR - to filter by price", "FCL - to clear the filters");
+		System.out.printf("%-40.40s   %-40.40s%n", "SALES - to show transactions", "SALES TEAM - to show the team");
+		System.out.printf("%-40.40s   %-40.40s%n", "SALES TOPSP - to show best SalesPerson", "SALES STATS - to show stats for 2019");
+		System.out.printf("%-40.100s%n", "SALES m - (where 'm' is a numerical value for month) to show sales for that month");
 
 		Scanner scan = new Scanner(System.in);//initialize scanner
 		while (scan.hasNextLine()){
+			try{
 			Scanner commandLine = new Scanner(scan.nextLine());
 			String choice = commandLine.nextLine();
-			if((!choice.equals("L"))&&(!choice.equals("BUY"))&&(!choice.equals("RET"))&&(!choice.equals("ADD"))&&(!choice.equals("SPR"))&&(!choice.equals("SSR"))&&(!choice.equals("FEL"))&&(!choice.equals("FAW"))&&(!choice.equals("SMR"))&&(!choice.equals("FCL"))&&(!choice.equals("Q"))&&(!choice.equals("SALES"))&&(!choice.equals("SALES TEAM"))&&(!choice.equals("SALES TOPSP"))&&(!choice.equals("SALES STATS"))){
+			
+			if((!choice.equals("MENU"))&&(!choice.equals("L"))&&(!choice.equals("BUY"))&&(!choice.equals("RET"))&&(!choice.equals("ADD"))&&(!choice.equals("SPR"))&&(!choice.equals("SSR"))&&(!choice.equals("FEL"))&&(!choice.equals("FAW"))&&(!choice.equals("SMR"))&&(!choice.equals("FCL"))&&(!choice.equals("Q"))&&(!choice.equals("SALES"))&&(!choice.equals("SALES TEAM"))&&(!choice.equals("SALES TOPSP"))&&(!choice.equals("SALES STATS"))){
 				System.out.println("Sorry I didn't understand that, try a different command.");
 			}
 			else if(choice.equals("L")){
 				dealer.displayInventory(); //If user chooses "L", display the inventory of the Dealership
+			}
+			else if(choice.equals("MENU")){
+				System.out.print("\nWelcome to Best-Ride Car Dealership!\n\nTo use our software input one of the following commands:");
+				System.out.printf("\n\n%-40.40s   %-40.40s%n", "L - to list our inventory", "Q - to quit this program");
+				System.out.printf("%-40.40s   %-40.40s%n", "BUY - to buy a vehicle", "RET - to return a car");
+				System.out.printf("%-40.40s   %-40.40s%n", "ADD - to add more vehicles", "SPR - to sort our inventory by price");
+				System.out.printf("%-40.40s   %-40.40s%n", "SSR - to sort by safety rating", "SMR - to sort by max range");
+				System.out.printf("%-40.40s   %-40.40s%n", "FEL - to filter our inventory by Elect", "FAW - to filter for AWD");
+				System.out.printf("%-40.40s   %-40.40s%n", "FPR - to filter by price", "FCL - to clear the filters");
+				System.out.printf("%-40.40s   %-40.40s%n", "SALES - to show transactions", "SALES TEAM - to show the team");
+				System.out.printf("%-40.40s   %-40.40s%n", "SALES TOPSP - to show best SalesPerson", "SALES STATS - to show stats for 2019");
+				System.out.printf("%-40.100s%n", "SALES m - (where 'm' is a numerical value for month) to show sales for that month");
 			}	  
 			else if(choice.equals("Q")){
 				break;
@@ -88,7 +91,8 @@ public class CarDealershipSimulator {
 				
 			}
 			else if(choice.equals("ADD")){ //Adds a pre-set ArrayList of cars into the inventory of the dealership
-				dealer.addCars(cars);
+				//dealer.addCars(cars);
+				dealer.addCars(readCars);
 				System.out.println("Cars added to dealership");
 
 			}
@@ -142,6 +146,7 @@ public class CarDealershipSimulator {
 					dealer.getAccounts().displayAllTransactions();
 				}
 			}
+		
 			else if(choice.equals("SALES TEAM")){
 				System.out.println(dealer.getTeam().getTeam());
 			}
@@ -164,8 +169,10 @@ public class CarDealershipSimulator {
 			else if(choice.equals("SALES STATS")){
 				Map<Integer,Transaction> trans = dealer.getAccounts().getTransactions();
 				Map<Integer,Integer> monthSales = new HashMap<Integer,Integer>();
+				for(int i=0;i<12;i++){
+					monthSales.put(i, 0);
+				}
 				int totalSales=0;
-				int averageSales=0;
 				int averageSalesPerMonth=0;
 				int numberOfSales=0;
 				int highestSalesMonth=0;
@@ -179,28 +186,34 @@ public class CarDealershipSimulator {
 						numberOfSales--;
 					}
 					else{
-						int salesMonth = thisTrans.getDate().getInstance().get(Calendar.MONTH);
+						int salesMonth = thisTrans.getDate().get(Calendar.MONTH);
 						monthSales.put(salesMonth, monthSales.get(salesMonth)+1);
 						totalSales+=thisTrans.getPrice();
 						numberOfSales++;
 					}
 				}
 				for(Map.Entry<Integer,Integer> entry: monthSales.entrySet()){
-					averageSalesPerMonth+=entry.getValue();
+					
 					if(entry.getValue()>maxSalesPerMonth){
-						highestSalesMonth=entry.getKey();
+						
 						maxSalesPerMonth=entry.getValue();
 					}
 				}
-				averageSalesPerMonth=averageSalesPerMonth/12;
-				averageSales = totalSales/numberOfSales;
+				averageSalesPerMonth=totalSales/12;
+				
 				Calendar date = new GregorianCalendar();
 				date.set(Calendar.MONTH, highestSalesMonth);
 				System.out.println("The total number of sales for 2019 is: "+ numberOfSales);
-				System.out.println("The average sales in terms of $ per month is: "+averageSales/averageSalesPerMonth);
-				System.out.println("The total number of cars sold is: "+ totalSales);
-				System.out.println("the highest sales month in terms of # of cars sold is: "+date.getDisplayName(Calendar.MONTH, Calendar.SHORT_FORMAT,Locale.CANADA ));
+				System.out.println("The average sales in terms of $ per month is: "+averageSalesPerMonth);
+				System.out.println("The total value of cars sold is: "+ totalSales);
+				System.out.println("The highest sales month in terms of # of cars sold is: "+date.getDisplayName(Calendar.MONTH, Calendar.SHORT_FORMAT,Locale.CANADA) +", with "+maxSalesPerMonth+" sales!");
+				System.out.println("The total number of returns this year is: "+totalReturns);
+			}
+			
+			}
+			catch(NoSuchElementException e){
+				System.out.println("Please enter a command. To see the menu again enter 'MENU'.");
 			}
 		}
-  	}
+	}
 }

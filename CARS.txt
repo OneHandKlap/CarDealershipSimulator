@@ -7,3 +7,14 @@ Chevy      red    MINIVAN GAS_ENGINE      9.25 475 2WD 40000
 ChevyVolt  green  SEDAN   ELECTRIC_MOTOR  8.9  375 AWD 37000  45
 Bentley    black  SEDAN   GAS_ENGINE      9.8  575 2WD 150000
 NissanLeaf green  SEDAN   ELECTRIC_MOTOR  8.8  325 AWD 32000  55
+BMW        silver SEDAN   GAS_ENGINE      8.5  550 AWD 38000
+Volkswagen red    SEDAN   GAS_ENGINE      9.0  600 2WD 28000
+Kia        blue   SPORTS  GAS_ENGINE      9.5  500 2WD 25000
+Honda      green  MINIVAN GAS_ENGINE      9.8  600 2WD 38000
+Chevy      gold   SEDAN   GAS_ENGINE      7.2  700 AWD 33000
+Tesla      black  SPORTS  ELECTRIC_MOTOR  8.5  400 2WD 45000  50
+BMW        Silver SUV     GAS_ENGINE      9.2  450 AWD 50000
+Volkswagen red    SEDAN   GAS_ENGINE      8.3  600 2WD 44000
+Kia        blue   SEDAN   GAS_ENGINE      7.4  500 2WD 18000
+Honda      red    SUV     GAS_ENGINE      8.5  400 AWD 21000
+Chevrolet  green  SEDAN   GAS_ENGINE      6.8  450 AWD 38000
