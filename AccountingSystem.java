@@ -1,4 +1,9 @@
 import java.util.*;
+/**
+ * This class is the foundation for the dealership's transaction based accounting system
+ * @param transactions map to store and track individual transactions
+ * @param transIDs arraylist to track and ensure each transID is unique
+ */
 
 
 public class AccountingSystem{
@@ -6,57 +11,47 @@ public class AccountingSystem{
     Map<Integer,Transaction> transactions;
     ArrayList<Integer> transIDs;
 
+    //Getters
 	public Map<Integer,Transaction> getTransactions() {
 		return this.transactions;
-	}
-
-	public void setTransactions(Map<Integer,Transaction> transactions) {
-		this.transactions = transactions;
-	}
-
-
+    }
+    public Transaction getTransaction(int id){
+        return transactions.get(id);
+    }
+    //Generic class constructor
     public AccountingSystem(){
         transactions = new HashMap<Integer,Transaction>();
         transIDs = new ArrayList<Integer>();
     }
-
-    public Transaction add(Calendar date, Car item, String salesPerson, Transaction.Type type, double price){
-        
-        Random random = new Random();
-        int transactionID = random.nextInt(98)+1;
-        while(transIDs.contains(transactionID)){
-            transactionID=random.nextInt(98)+1;
-        }
-        transIDs.add(transactionID);
-        Transaction nextTransaction = new Transaction(transactionID, item, salesPerson, type);
-        nextTransaction.setDate(date.getTime());
-        nextTransaction.setPrice(price);
-        transactions.put(transactionID,nextTransaction);
-        return nextTransaction;
-    }
-
+    //
     public String add(Transaction trans){
         transactions.put(trans.getId(), trans);
         return trans.display();
     }
-    public Transaction getTransaction(int id){
-       return transactions.get(id);
+    
+    //This function simultaneously creates a transaction given the inputs, and places it within the accounting system map for transactions
+    public Transaction add(Calendar date, Car item, String salesPerson, Transaction.Type type, double price){
+        
+        Random random = new Random();
+        int transactionID = random.nextInt(98)+1; //creates a random transaction ID between 0-99
+        while(transIDs.contains(transactionID)){//this while loop ensures that the generated ID# is indeed unique
+            transactionID=random.nextInt(98)+1;
+        }
+        transIDs.add(transactionID); //updates our list of used ID's
+        Transaction nextTransaction = new Transaction(transactionID, item, salesPerson, type); //creates the transaction with the inputs
+        nextTransaction.setDate(date.getTime()); //updates the values that are not included in the constructor
+        nextTransaction.setPrice(price);
+        transactions.put(transactionID,nextTransaction); //adds it to the accountingSystem's map of transactions
+        return nextTransaction;
     }
-    public void displayAllTransactions(){
+
+    
+    public void displayAllTransactions(){ //iterates across the map of all transactions and prints them out
         for(Map.Entry<Integer,Transaction> entry: transactions.entrySet()){
             System.out.println(entry.getValue().display());
         }
     }
 
     public static void main(String[]args){
-        Car BMW = new Car("BMW", "Red", 4, Vehicle.Power.GAS_ENGINE, Car.Model.SEDAN, 700, 9.5, true, 40000);
-        SalesTeam newTeam = new SalesTeam();
-        //Transaction firstSale = new Transaction(85, BMW, newTeam.getPerson(),Transaction.Type.BUY);
-        AccountingSystem ourSystem = new AccountingSystem();
-        Date date = new Date();
-        Calendar cal = new GregorianCalendar();
-        cal.setTime(date);
-        ourSystem.add(cal, BMW, newTeam.getRandomPerson().getName(), Transaction.Type.BUY, BMW.getPrice());
-        ourSystem.displayAllTransactions();
     }
 }

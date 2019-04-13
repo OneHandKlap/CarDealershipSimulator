@@ -1,8 +1,18 @@
 import java.util.GregorianCalendar;
 import java.text.SimpleDateFormat;
 import java.util.*;
-
-import sun.util.calendar.Gregorian;
+/**
+ * Transaction.java class is the object for all sales/returns for the dealership
+ * @author Peter Aboud - 500883647
+ * @version 2.0
+ * @since 2019-04-13 
+ * @param id - transaction ID which is a unique identifier for the object
+ * @param date - calendar value associated with each object identifying the date the transaction took place
+ * @param item - what was sold
+ * @param salesPerson - who sold it
+ * @param price - how much it was sold for
+ * @param type - what type of transaction it was
+ */
 
 public class Transaction{
 
@@ -14,6 +24,8 @@ public class Transaction{
     private Type transactionType;
     enum Type {BUY, RET};
 
+
+	//Getters and setters
 	public int getId() {
 		return this.id;
 	}
@@ -61,13 +73,13 @@ public class Transaction{
 	public void setTransactionType(Type transactionType) {
 		this.transactionType = transactionType;
 	}
-
+	//Generic constructor
     public Transaction(){
 		Date day = new Date();
         this.date = new GregorianCalendar();
         date.setTime(day);
 	}
-
+	//Specific constructor
     public Transaction(int id, Car item, String seller, Type transact){
         Date day = new Date();
         
@@ -79,7 +91,8 @@ public class Transaction{
         this.transactionType = transact;
         this.price=item.getPrice();
         
-    }
+	}
+	//display function. A specific format for each type of transaction
     public String display(){
         if(this.transactionType == Transaction.Type.BUY){
             return "#"+this.id+" "+ this.salesPerson+" sold: "+this.item.getMfr()+" "+ new SimpleDateFormat("EEE, MMM d, yyyy").format(this.date.getTime());
